@@ -1,5 +1,6 @@
 import unittest
 import YelpCity
+import time
 
 class TestYelp(unittest.TestCase):
 
@@ -8,4 +9,8 @@ class TestYelp(unittest.TestCase):
         
 
 if __name__ == '__main__':
-    unittest.main()
+    #unittest.main()
+    start = time.time()
+    YelpCity.YelpRanking('wSdDzLyKX11alfcYGWA1dFGdnteewC7v-zrgM1EjNvj2Rll-v7GEefpzNl-tE06nYNctrSszKusIMR1qrBe5hzCgBqQdJgV_aSuC5HokPdd10W0JfnsuO_rLT1uPXnYx')
+    end = time.time()
+    print(end - start)
