@@ -22,10 +22,13 @@ class YelpRanking(object):
         }
         self.business_id_set = set()
         self.business_list = []
-        with Pool(4) as p:
-            lst = p.map(self.business_zip, zcdb.find_zip(city = city))
+        for zip_obj in zcdb.find_zip(city = city):
+            self.business_list.append(self.business_zip(zip_obj))
 
-        lst = [item for sublist in lst if sublist is not None for item in sublist]
+        #with Pool(4) as p:
+        #    lst = p.map(self.business_zip, zcdb.find_zip(city = city))
+
+        #lst = [item for sublist in lst if sublist is not None for item in sublist]
         '''
         for city_zip in zcdb.find_zip(city = city):
             param = {
@@ -47,7 +50,7 @@ class YelpRanking(object):
             # create dataframe to put response.text in it
             #print(len(self.business_list))
         '''
-        print(len(lst))
+        print(len(self.business_list))
 
     def business_zip(self, zip_code):
         param = {
@@ -61,9 +64,6 @@ class YelpRanking(object):
         print(zip_code.zip, response.status_code)
         while response.status_code == 429: 
             response = requests.get(url = self.url, headers = self.headers, params = param)
-        if response.status_code != 200:
-            print('ran Through')
-            return
         if int(zip_code.zip) != 94124: return
         print('ran through code')
         total = response.json()['total']
@@ -87,6 +87,8 @@ class YelpRanking(object):
                 response = requests.get(url = url, headers = headers, params = param)
             if response.status_code != 200: continue
             for business in response.json()['businesses']:
+                if business['id'] in self.business_id_set:
+                    continue
                 new_dict = {}
                 price = business['price'] if 'price' in business else None
                 categories = [categories['alias'] for categories in business['categories']]
