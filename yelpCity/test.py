@@ -1,16 +1,12 @@
 import unittest
 import YelpCity
-import time
 
 class TestYelp(unittest.TestCase):
-
+    API_KEY = None
     def test_create(self):
-        my_yelp = YelpCity.YelpRanking('wSdDzLyKX11alfcYGWA1dFGdnteewC7v-zrgM1EjNvj2Rll-v7GEefpzNl-tE06nYNctrSszKusIMR1qrBe5hzCgBqQdJgV_aSuC5HokPdd10W0JfnsuO_rLT1uPXnYx')
+        my_yelp = YelpCity.YelpRanking(self.API_KEY)
         
 
 if __name__ == '__main__':
-    #unittest.main()
-    start = time.time()
-    YelpCity.YelpRanking('wSdDzLyKX11alfcYGWA1dFGdnteewC7v-zrgM1EjNvj2Rll-v7GEefpzNl-tE06nYNctrSszKusIMR1qrBe5hzCgBqQdJgV_aSuC5HokPdd10W0JfnsuO_rLT1uPXnYx')
-    end = time.time()
-    print(end - start)
+    TestYelp.API_KEY = input('Enter API key\n')
+    unittest.main()
