@@ -7,10 +7,38 @@ from multiprocessing import Pool
 
 class YelpRanking(object):
     """
+    This class is for getting all search results of a yelp search
+    for a given city.
 
+    ...
+
+    Attributes
+    ----------
+    key : str
+        The yelp API key needed to call Yelp Fusion API.
+    city : str
+        The city to search over.
+
+    Methods
+    -------
+    find_businesses(zip_code):
+        Find the search terms for a given pyzipcode.ZipCode object
+    get_businesses(start, ending, location, url, headers):
+        
     """
     
     def __init__(self, key, city = 'San Francisco'):
+        """
+        The construct for the YelpCity class.
+
+        Parameters
+        ----------
+            key : str
+                The yelp API key needed to call Yelp Fusion API.
+            city : str
+                The city to search over.
+        """
+
         api_host = 'https://api.yelp.com'
         search_path = '/v3/businesses/search'
         business_path = '/v3/businesses/'
@@ -20,14 +48,27 @@ class YelpRanking(object):
             'Authorization' : 'Bearer %s' % key,
         }
         self.business_id_set = set()
-        self.business_list = []
+        selfget_businesses(self, start, ending, location, url, headers).business_list = []
         for zip_obj in zcdb.find_zip(city = city):
-            self.business_list += self.business_zip(zip_obj)
+            self.business_list += self.find_businesses(zip_obj)
 
+    def find_businesses(self, zip_code):
+        """
+        The function to find all the search terms for the given city.
 
-        print(len(self.business_list))
+        Parameters
+        ----------
+        zip_code : pyzipcode.ZipCode
+            The pyzipcode object assciated with the zip code.
 
-    def business_zip(self, zip_code):
+        Returns
+        -------
+        lst : List
+            List of Dictionary objects that hold the information of 
+            the businesses given by the yelp fusion API of the given
+            zip code object
+        """
+        
         param = {
                 'location' : str(zip_code.zip),
                 'limit' : 1,
@@ -47,6 +88,32 @@ class YelpRanking(object):
         return lst
 
     def get_businesses(self, start, ending, location, url, headers):
+        """
+        Returns the business information from the start offset to 
+        the end offset with a total of 50 businesses.
+
+        Parameters
+        ----------
+        start : int
+            The starting offset to start searching from
+        ending : int 
+            The endpoint of the search
+        location : int
+            The location to search for
+        url : str
+            The url to pass the request to
+        headers: dict
+            The headers to pass in the request
+
+        Retruns
+        -------
+        lst : List
+            List of Dictionary objects that hold the information of 
+            the businesses given by the yelp fusion API of the given
+            location. There will be a maximum of 50 object inside
+            the lst.
+        """
+        
         lst = []
         for offset in range(start, ending + 1, 50):
             param = {
@@ -74,4 +141,16 @@ class YelpRanking(object):
         return lst
 
     def to_json(self):
+        """
+        Returns a json format of self.business_list
+        
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        Json format of self.business_list
+        """
+        
         return json.dumps(self.business_list)
