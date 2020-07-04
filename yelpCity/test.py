@@ -3,8 +3,8 @@ import YelpCity
 
 class TestYelp(unittest.TestCase):
     API_KEY = None
+        my_yelp = YelpCity.FindBusinesses(self.API_KEY)
     def test_create(self):
-        my_yelp = YelpCity.YelpRanking(self.API_KEY)
         
 
 if __name__ == '__main__':

@@ -1,8 +1,6 @@
 from pyzipcode import ZipCodeDatabase
 import json
 import requests
-import pandas as pd
-from multiprocessing import Pool
 
 
 class YelpRanking(object):
@@ -33,10 +31,10 @@ class YelpRanking(object):
 
         Parameters
         ----------
-            key : str
-                The yelp API key needed to call Yelp Fusion API.
-            city : str
-                The city to search over.
+        key : str
+            The yelp API key needed to call Yelp Fusion API.
+        city : str
+            The city to search over.
         """
 
         api_host = 'https://api.yelp.com'
