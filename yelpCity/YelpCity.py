@@ -3,7 +3,7 @@ import json
 import requests
 
 
-class YelpRanking(object):
+class FindBusinesses(object):
     """
     This class is for getting all search results of a yelp search
     for a given city.
@@ -41,16 +41,27 @@ class YelpRanking(object):
         search_path = '/v3/businesses/search'
         business_path = '/v3/businesses/'
         zcdb = ZipCodeDatabase()
-        self.url = api_host + search_path
-        self.headers = {
+        url = api_host + search_path
+        header = {
             'Authorization' : 'Bearer %s' % key,
         }
+        param = {
+                'location' : city,
+                'limit' : 1,
+                'offset' : 0,
+                'term' : 'restaurants',
+                'sort_by' : 'best_match',
+        }
+        response = requests.get(url = url, headers = header, params = param)
+ 
+ 
         self.business_id_set = set()
-        selfget_businesses(self, start, ending, location, url, headers).business_list = []
+        self.business_list = []
         for zip_obj in zcdb.find_zip(city = city):
-            self.business_list += self.find_businesses(zip_obj)
+            self.business_list += self.find_businesses(zip_obj, url, header)
+        self.region = response.json()['region']
 
-    def find_businesses(self, zip_code):
+    def find_businesses(self, zip_code, url, header):
         """
         The function to find all the search terms for the given city.
 
@@ -74,18 +85,18 @@ class YelpRanking(object):
                 'term' : 'restaurants',
                 'sort_by' : 'best_match',
         }
-        response = requests.get(url = self.url, headers = self.headers, params = param)
+        response = requests.get(url = url, headers = header, params = param)
         while response.status_code == 429: 
-            response = requests.get(url = self.url, headers = self.headers, params = param)
+            response = requests.get(url = url, headers = header, params = param)
         if not response.ok: 
             return []
         total = response.json()['total']
         total = min(total, 1000)
-        lst =  self.get_businesses(0, total - total % 50, zip_code.zip, self.url, self.headers)
-        lst += self.get_businesses(total - total%50, total, zip_code.zip, self.url, self.headers)
+        lst =  self.get_businesses(0, total - total % 50, zip_code.zip, url, header)
+        lst += self.get_businesses(total - total%50, total, zip_code.zip, url, header)
         return lst
 
-    def get_businesses(self, start, ending, location, url, headers):
+    def get_businesses(self, start, ending, location, url, header):
         """
         Returns the business information from the start offset to 
         the end offset with a total of 50 businesses.
@@ -121,9 +132,9 @@ class YelpRanking(object):
                     'term' : 'restaurants',
                     'sort_by' : 'best_match',
             }
-            response = requests.request('GET', url = url, headers = headers, params = param)
+            response = requests.request('GET', url = url, headers = header, params = param)
             while response.status_code == 429: 
-                response = requests.get(url = url, headers = headers, params = param)
+                response = requests.get(url = url, headers = header, params = param)
             if not response.ok: continue
 
             for business in response.json()['businesses']:
@@ -148,7 +159,11 @@ class YelpRanking(object):
 
         Returns
         -------
-        Json format of self.business_list
+        Json format based on city and business_list
         """
-        
-        return json.dumps(self.business_list)
+        curr_business_info = {}
+        curr_business_info['total'] = len(self.business_list)
+        curr_business_info['businesses'] = self.business_list
+        curr_business_info['region'] = self.region
+        return json.dumps(curr_business_info)
+                
