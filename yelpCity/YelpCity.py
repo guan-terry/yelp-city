@@ -87,13 +87,16 @@ class FindBusinesses(object):
         }
         response = requests.get(url = url, headers = header, params = param)
         while response.status_code == 429: 
-            response = requests.get(url = url, headers = header, params = param)
+            response = requests.get(url = url, headers = header, 
+                                    params = param)
         if not response.ok: 
             return []
         total = response.json()['total']
         total = min(total, 1000)
-        lst =  self.get_businesses(0, total - total % 50, zip_code.zip, url, header)
-        lst += self.get_businesses(total - total%50, total, zip_code.zip, url, header)
+        lst =  self.get_businesses(0, total - total % 50, zip_code.zip,
+                                   url, header)
+        lst += self.get_businesses(total - total%50, total, zip_code.zip,
+                                   url, header)
         return lst
 
     def get_businesses(self, start, ending, location, url, header):
@@ -132,9 +135,11 @@ class FindBusinesses(object):
                     'term' : 'restaurants',
                     'sort_by' : 'best_match',
             }
-            response = requests.request('GET', url = url, headers = header, params = param)
+            response = requests.request('GET', url = url, headers = header,
+                                        params = param)
             while response.status_code == 429: 
-                response = requests.get(url = url, headers = header, params = param)
+                response = requests.get(url = url, headers = header, 
+                                        params = param)
             if not response.ok: continue
 
             for business in response.json()['businesses']:
