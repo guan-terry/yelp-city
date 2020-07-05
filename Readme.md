@@ -13,7 +13,7 @@ pip install pyzipcode
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
 
 ```bash
-N/A
+pip install YelpCity
 ```
 
 ## Usage
