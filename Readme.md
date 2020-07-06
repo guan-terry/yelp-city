@@ -17,7 +17,7 @@ pip install YelpCity
 ```
 
 ## Usage
-
+Code may take up to 20 minutes to run.
 ```python
 import YelpCity
 
