@@ -1,4 +1,5 @@
 # YelpCity
+[![Downloads](https://pepy.tech/badge/yelpcity)](https://pepy.tech/project/yelpcity)
 
 YelpCity is a Python library for obtaining search queries of more than 1000 limited by the Yelp Fusion API.
 
